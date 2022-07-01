@@ -3,8 +3,7 @@
 const findFactorial = (n) => {
   let total;
   if (n === 1) return 1;
-  total = n * findFactorial(n - 1);
-  return total;
+  return n * findFactorial(n - 1);
 };
 
-console.log(findFactorial(5));
+console.log(findFactorial(4));
