@@ -1,4 +1,4 @@
-// ===============================
+// ===============================    MERGIN two arrays ============
 
 const merge = (array1, array2) => {
   let combined = [];
