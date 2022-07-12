@@ -35,11 +35,26 @@ const fetchDogPic = async () => {
     console.log(data.body.message);
     await writeFile("./random-dog-images.txt", data.body.message);
   } catch (err) {
+    throw err;
+    // return err ----> i wanted to know what would happen and if we retturn the error
+    // the promisses is taken as resolved and not as rejected in line 50
     console.log(err);
   }
+  return "It is done";
 };
 
-fetchDogPic();
+console.log("1: Will get dog pics!");
+//fetchDogPic();
+
+fetchDogPic()
+  .then((x) => {
+    console.log(x);
+    console.log("3: Done getting dog pics!");
+  })
+  .catch((err) => {
+    console.log("ERROR 💥");
+  });
+
 // ------------------------  Method chainning ----------------------
 
 // readFile(`${__dirname}/dog.txt`)
