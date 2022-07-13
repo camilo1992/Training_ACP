@@ -42,18 +42,19 @@ const fetchDogPic = async () => {
   }
   return "It is done";
 };
-
-console.log("1: Will get dog pics!");
 //fetchDogPic();
 
-fetchDogPic()
-  .then((x) => {
-    console.log(x);
+(async () => {
+  console.log("1: Will get dog pics!");
+
+  try {
+    const x = await fetchDogPic();
+    console.log(x); // in order to read the promise returns we needed to write an EEFE
     console.log("3: Done getting dog pics!");
-  })
-  .catch((err) => {
+  } catch (err) {
     console.log("ERROR 💥");
-  });
+  }
+})();
 
 // ------------------------  Method chainning ----------------------
 
