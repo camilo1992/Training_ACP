@@ -18,6 +18,24 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
+app.get('/api/v1/tours/:id', (req, res) => {
+  // the notation ":" ---> helps us idetentify a parameter ""params"
+  // so we can access it though the req.params
+  const id = +req.params.id;
+  const tour = tours.find((tour) => tour.id === id);
+  // we gotta check if the request is valid wether the input is a string or a number o invalid
+  if (!tour)
+    return res.status(404).json({ status: 'fail', message: 'Invalid ID' });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tour: tour,
+    },
+  });
+});
+
 app.post('/api/v1/tours', (req, res) => {
   // since this is a post express does not exposes the body into the req
   // we need to create a middleware... ---> something that handles the data in teh middle?
