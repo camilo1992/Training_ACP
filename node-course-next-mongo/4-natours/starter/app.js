@@ -1,4 +1,8 @@
-const fs = require('fs');
+// impoprt our tours and users rout their modules
+
+const tourRouter = require('./routs/toursRout');
+const userRouter = require('./routs/usersRout');
+
 // we call the business owner and requiere express
 const express = require('express');
 const morgan = require('morgan');
@@ -27,88 +31,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const tours = JSON.parse(fs.readFileSync('./dev-data/data/tours-simple.json'));
-
-const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestedTime,
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-};
-
-const addNewTour = (req, res) => {
-  // since this is a post express does not exposes the body into the req
-  // we need to create a middleware... ---> something that handles the data in teh middle?
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
-  // update tours arary with new one
-  tours.push(newTour);
-
-  //update tours.json file with the old and new tour
-  fs.writeFile(
-    './dev-data/data/tours-simple.json',
-    JSON.stringify(tours),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: { tour: newTour },
-      });
-    }
-  );
-
-  //res.send('Done');
-};
-const getTour = (req, res) => {
-  // the notation ":" ---> helps us idetentify a parameter ""params"
-  // so we can access it though the req.params
-  const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
-  // we gotta check if the request is valid wether the input is a string or a number o invalid
-  if (!tour)
-    return res.status(404).json({ status: 'fail', message: 'Invalid ID' });
-
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tour: tour,
-    },
-  });
-};
-const updateTour = (req, res) => {
-  const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
-
-  if (!tour)
-    return res.status(404).json({ status: 'fail', message: 'Invalid ID' });
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<updated element here',
-    },
-  });
-};
-
-const deleteTour = (req, res) => {
-  const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
-
-  if (!tour)
-    return res.status(404).json({ status: 'fail', message: 'Invalid ID' });
-
-  res.status(204).json({
-    status: 'success',
-    data: {
-      tour: null,
-    },
-  });
-};
-
 // there are diffent ways of organizing our code
 // 1   way
 // app.get('/api/v1/tours'), getAllTours;
@@ -116,15 +38,17 @@ const deleteTour = (req, res) => {
 
 // app.get('/api/v1/tours/:id', getTour);
 // app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
+// app.d  elete('/api/v1/tours/:id', deleteTour);
 
 // 2 way
-app.route('/api/v1/tours').get(getAllTours).post(addNewTour);
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(addNewTour)
-  .delete(deleteTour);
+
+// --------------------titying up our files---------------------------
+
+// In order to separate our rout into differetn files, we need to create a rout for every group of routes...
+
+// routting for users
+app.use('/api/v1/tours', tourRouter); // This process is called mountting router
+app.use('/api/v1/users', userRouter);
 
 app.listen(port, () => {
   console.log(`The serves has started at port ${port}`);
