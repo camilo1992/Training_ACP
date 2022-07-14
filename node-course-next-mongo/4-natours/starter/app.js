@@ -1,9 +1,14 @@
 const fs = require('fs');
+// we call the business owner and requiere express
 const express = require('express');
-const { json } = require('express');
+// for comfort we stroed it in a app
 const app = express();
+
+const { json } = require('express');
+
 const port = 3000;
 // this is a step which the request has to go through.....
+// This is a middleware fucntion that is necessary in order to post a request....
 app.use(express.json());
 
 const tours = JSON.parse(fs.readFileSync('./dev-data/data/tours-simple.json'));
@@ -57,6 +62,36 @@ app.post('/api/v1/tours', (req, res) => {
   );
 
   //res.send('Done');
+});
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+  const tour = tours.find((tour) => tour.id === id);
+
+  if (!tour)
+    return res.status(404).json({ status: 'fail', message: 'Invalid ID' });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<updated element here',
+    },
+  });
+});
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+  const tour = tours.find((tour) => tour.id === id);
+
+  if (!tour)
+    return res.status(404).json({ status: 'fail', message: 'Invalid ID' });
+
+  res.status(204).json({
+    status: 'success',
+    data: {
+      tour: null,
+    },
+  });
 });
 
 app.listen(port, () => {
